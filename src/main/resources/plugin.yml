@@ -1,7 +1,7 @@
-name: RejoinRewards
+name: JoinHandler
 version: 1.0
 main: me.cookie.joinhandler.JoinHandler
-description: A plugin that rewards players based on the time they were away.
+description: Join operations.
 api-version: 1.18
 author: Cookie#8723
 
