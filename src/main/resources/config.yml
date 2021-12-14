@@ -1,0 +1,14 @@
+first-join:
+  1: # Doesn't matter what this is called, as long as it is unique and different from the different lines
+    message: "message one"
+    delay: 0 # even if there's no delay put delay: 0
+  2:
+    message: "message two"
+    delay: 2
+  3:
+    message: "message three"
+    delay: 3 # This message will send 5 seconds after the player joined, the delays stack from the previous messages
+
+
+# Message that will be sent on evey subsequent join
+welcome-back: "<green>(playerName) has returned from their expedition!"
