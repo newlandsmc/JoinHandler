@@ -7,3 +7,4 @@ author: Cookie#8723
 
 depend:
   - SemiCore
+  - WorldEdit
