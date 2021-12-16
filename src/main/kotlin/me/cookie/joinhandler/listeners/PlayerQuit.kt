@@ -13,27 +13,36 @@ class PlayerQuit: Listener {
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent){
         val player = event.player
-        val clipboard = playerCampfire[player]
-        if(clipboard != null){
-            for (i in clipboard.minimumPoint.blockX..clipboard.maximumPoint.blockX) {
-                for (j in clipboard.minimumPoint.blockY..clipboard.maximumPoint.blockY) {
-                    for (k in clipboard.minimumPoint.blockZ..clipboard.maximumPoint.blockZ) {
-                        val block: Block = player.world.getBlockAt(i, j, k)
-                        if(block.type == BukkitAdapter.adapt(clipboard.getBlock(
-                                BukkitAdapter.adapt(
-                                    Location(player.world, i.toDouble(), j.toDouble(), k.toDouble())
-                                ).toVector().toBlockPoint()
-                        )).material){
-                            println("ran")
-                            Location(player.world, i.toDouble(), j.toDouble(), k.toDouble()).
-                            block.type = Material.AIR
-                            println(oldBlocks[player]!![Vector3.at(i.toDouble(), j.toDouble(), k.toDouble())]!!)
+        if(!event.player.hasPlayedBefore()) {
+            val clipboard = playerCampfire[player]
+            val offsets = playerOffsets[player]!!
+            if(clipboard != null){
+                for (i in 0..offsets.maximumPoint.blockX - offsets.minimumPoint.blockX) {
+                    for (j in 0..offsets.maximumPoint.blockY - offsets.minimumPoint.blockY) {
+                        for (k in 0..offsets.maximumPoint.blockZ - offsets.minimumPoint.blockZ) {
+                            val block: Block = player.world.getBlockAt(
+                                i + offsets.minimumPoint.blockX,
+                                j + offsets.minimumPoint.blockY,
+                                k + offsets.minimumPoint.blockZ
+                            )
+                            if(block.type == Material.CHEST) continue
+                            if(block.type == BukkitAdapter.adapt(clipboard.getBlock(
+                                    BukkitAdapter.adapt(
+                                        Location(player.world,
+                                            i.toDouble() + clipboard.minimumPoint.blockX,
+                                            j.toDouble() + clipboard.minimumPoint.blockY,
+                                            k.toDouble() + clipboard.minimumPoint.blockZ)
+                                    ).toVector().toBlockPoint().subtract()
+                                )).material){
+                                block.type = oldBlocks[player]!![Vector3.at(i.toDouble(), j.toDouble(), k.toDouble())]!!
+                            }
                         }
                     }
                 }
+                oldBlocks.remove(player)
+                playerCampfire.remove(player)
+                playerOffsets.remove(player)
             }
-            oldBlocks.remove(player)
-            playerCampfire.remove(player)
         }
     }
 }

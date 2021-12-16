@@ -2,6 +2,7 @@ package me.cookie.joinhandler.listeners
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import com.sk89q.worldedit.math.Vector3
+import com.sk89q.worldedit.regions.CuboidRegion
 import me.cookie.joinhandler.JoinHandler
 import me.cookie.joinhandler.StarterCampfire
 import me.cookie.semicore.message.dialogue.Dialogue
@@ -20,6 +21,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
 val oldBlocks = HashMap<Player, HashMap<Vector3, Material>>()
 val playerCampfire = HashMap<Player, Clipboard>()
+val playerOffsets = HashMap<Player, CuboidRegion>()
 
 class PlayerJoin: Listener {
     private val plugin = JavaPlugin.getPlugin(JoinHandler::class.java)
@@ -29,21 +31,28 @@ class PlayerJoin: Listener {
     fun onPlayerSpawn(event: PlayerSpawnLocationEvent){
 
         val player = event.player
-        if(player.hasPlayedBefore()){
+        if(!player.hasPlayedBefore()){
             val campfireSpawner = StarterCampfire()
             val clipboard = campfireSpawner.clipboard
+            val offsets = campfireSpawner.getPlayerOffsets(player)
+
             val locationTypeMap = HashMap<Vector3, Material>()
-            for (i in clipboard.minimumPoint.blockX..clipboard.maximumPoint.blockX) {
-                for (j in clipboard.minimumPoint.blockY..clipboard.maximumPoint.blockY) {
-                    for (k in clipboard.minimumPoint.blockZ..clipboard.maximumPoint.blockZ) {
-                        val block: Block = player.world.getBlockAt(i, j, k)
+            for (i in 0..offsets.maximumPoint.blockX - offsets.minimumPoint.blockX) {
+                for (j in 0..offsets.maximumPoint.blockY - offsets.minimumPoint.blockY) {
+                    for (k in 0..offsets.maximumPoint.blockZ - offsets.minimumPoint.blockZ) {
+                        val block: Block = player.world.getBlockAt(
+                            i + offsets.minimumPoint.blockX,
+                            j + offsets.minimumPoint.blockY,
+                            k + offsets.minimumPoint.blockZ
+                        )
                         locationTypeMap[Vector3.at(i.toDouble(), j.toDouble(), k.toDouble())] = block.type
                     }
                 }
             }
+
             oldBlocks[player] = locationTypeMap
             playerCampfire[player] = clipboard
-
+            playerOffsets[player] = offsets
             player.queueDialogue(
                 createFirstJoinDialogue(player)
             )
