@@ -45,7 +45,7 @@ class StarterCampfire {
 
         val session = WorldEdit.getInstance().newEditSession(world)
         val operation: Operation = ClipboardHolder(clipboard).createPaste(session)
-            .to(location.toVector().toBlockPoint()).ignoreAirBlocks(true).build()
+            .to(location.toVector().toBlockPoint()).ignoreAirBlocks(false).build()
 
         try {
             Operations.complete(operation)
