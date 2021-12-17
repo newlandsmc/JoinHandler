@@ -15,10 +15,10 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
 
 val oldBlocks = HashMap<Player, HashMap<Vector3, Material>>()
@@ -29,8 +29,23 @@ class PlayerJoin: Listener {
     private val plugin = JavaPlugin.getPlugin(JoinHandler::class.java)
 
 
-    @EventHandler
-    fun onPlayerSpawn(event: PlayerSpawnLocationEvent){
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun onPlayerJoin(event: PlayerJoinEvent){
+        if(!event.player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
+            event.joinMessage(
+                MiniMessage.get().parse(
+                    plugin.config.getString("first-join")!!
+                        .formatPlayerPlaceholders(event.player)
+                )
+            )
+        }else{
+            event.joinMessage(
+                MiniMessage.get().parse(
+                    plugin.config.getString("welcome-back")!!
+                        .formatPlayerPlaceholders(event.player)
+                )
+            )
+        }
 
         val player = event.player
         if(!player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
@@ -60,26 +75,6 @@ class PlayerJoin: Listener {
             )
 
             campfireSpawner.spawn(player)
-        }
-    }
-
-
-    @EventHandler
-    fun onPlayerJoin(event: PlayerJoinEvent){
-        if(!event.player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
-            event.joinMessage(
-                MiniMessage.get().parse(
-                    plugin.config.getString("first-join")!!
-                        .formatPlayerPlaceholders(event.player)
-                )
-            )
-        }else{
-            event.joinMessage(
-                MiniMessage.get().parse(
-                    plugin.config.getString("welcome-back")!!
-                        .formatPlayerPlaceholders(event.player)
-                )
-            )
         }
 
     }
