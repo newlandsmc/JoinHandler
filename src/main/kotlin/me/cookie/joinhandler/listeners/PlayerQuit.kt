@@ -3,6 +3,7 @@ package me.cookie.joinhandler.listeners
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.math.Vector3
 import me.cookie.joinhandler.JoinHandler
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -16,6 +17,9 @@ class PlayerQuit: Listener {
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent){
         val player = event.player
+        event.quitMessage(MiniMessage.get().parse(
+            plugin.config.getString("leave-message")!!
+        ))
         if(!event.player.hasPlayedBefore()) {
             if(plugin.config.getBoolean("revert-spawn-structure")){
                 val clipboard = playerCampfire[player]
