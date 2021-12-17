@@ -5,6 +5,7 @@ import com.sk89q.worldedit.math.Vector3
 import com.sk89q.worldedit.regions.CuboidRegion
 import me.cookie.joinhandler.JoinHandler
 import me.cookie.joinhandler.StarterCampfire
+import me.cookie.semicore.formatPlayerPlaceholders
 import me.cookie.semicore.message.dialogue.Dialogue
 import me.cookie.semicore.message.dialogue.queueDialogue
 import me.cookie.semicore.message.messagequeueing.MessageReceiver
@@ -15,6 +16,7 @@ import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
@@ -31,7 +33,7 @@ class PlayerJoin: Listener {
     fun onPlayerSpawn(event: PlayerSpawnLocationEvent){
 
         val player = event.player
-        if(!player.hasPlayedBefore()){
+        if(!player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
             val campfireSpawner = StarterCampfire()
             val clipboard = campfireSpawner.clipboard
             val offsets = campfireSpawner.getPlayerOffsets(player)
@@ -60,6 +62,29 @@ class PlayerJoin: Listener {
             campfireSpawner.spawn(player)
         }
     }
+
+
+    @EventHandler
+    fun onPlayerJoin(event: PlayerJoinEvent){
+        if(!event.player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
+            event.joinMessage(
+                MiniMessage.get().parse(
+                    plugin.config.getString("first-join")!!
+                        .formatPlayerPlaceholders(event.player)
+                )
+            )
+        }else{
+            event.joinMessage(
+                MiniMessage.get().parse(
+                    plugin.config.getString("welcome-back")!!
+                        .formatPlayerPlaceholders(event.player)
+                )
+            )
+        }
+
+    }
+
+    // Probably move this to dialogue system in core?
 
     private fun createFirstJoinDialogue(player: Player): Dialogue{
         val messageList = mutableListOf<QueuedMessage>()

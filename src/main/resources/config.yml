@@ -12,8 +12,11 @@ first-join-dialogue:
     delay: 3 # This message will send 5 seconds after the player joined, the delays stack from the previous messages
 
 
-
+revert-spawn-structure: true
 
 # Message that will be sent on evey subsequent join
 welcome-back: "<green>* (playerName) has returned from their expedition!"
 leave-message: "<red>* (playerName) left on an expedition..."
+
+# Ignores the first join limitations
+debug-spawn: false
