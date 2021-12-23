@@ -15,10 +15,10 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 
 
 val oldBlocks = HashMap<Player, HashMap<Vector3, Material>>()
@@ -29,7 +29,7 @@ class PlayerJoin: Listener {
     private val plugin = JavaPlugin.getPlugin(JoinHandler::class.java)
 
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent){
         if(!event.player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
             event.joinMessage(
@@ -49,34 +49,38 @@ class PlayerJoin: Listener {
 
         val player = event.player
         if(!player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
-            val campfireSpawner = StarterCampfire()
-            val clipboard = campfireSpawner.clipboard
-            val offsets = campfireSpawner.getPlayerOffsets(player)
+            object: BukkitRunnable() {
+                override fun run() {
+                    val campfireSpawner = StarterCampfire()
+                    val clipboard = campfireSpawner.clipboard
+                    val offsets = campfireSpawner.getPlayerOffsets(player)
 
-            val locationTypeMap = HashMap<Vector3, Material>()
-            for (i in 0..offsets.maximumPoint.blockX - offsets.minimumPoint.blockX) {
-                for (j in 0..offsets.maximumPoint.blockY - offsets.minimumPoint.blockY) {
-                    for (k in 0..offsets.maximumPoint.blockZ - offsets.minimumPoint.blockZ) {
-                        val block: Block = player.world.getBlockAt(
-                            i + offsets.minimumPoint.blockX,
-                            j + offsets.minimumPoint.blockY,
-                            k + offsets.minimumPoint.blockZ
-                        )
-                        locationTypeMap[Vector3.at(i.toDouble(), j.toDouble(), k.toDouble())] = block.type
+                    val locationTypeMap = HashMap<Vector3, Material>()
+                    for (i in 0..offsets.maximumPoint.blockX - offsets.minimumPoint.blockX) {
+                        for (j in 0..offsets.maximumPoint.blockY - offsets.minimumPoint.blockY) {
+                            for (k in 0..offsets.maximumPoint.blockZ - offsets.minimumPoint.blockZ) {
+                                val block: Block = player.world.getBlockAt(
+                                    i + offsets.minimumPoint.blockX,
+                                    j + offsets.minimumPoint.blockY,
+                                    k + offsets.minimumPoint.blockZ
+                                )
+                                locationTypeMap[Vector3.at(i.toDouble(), j.toDouble(), k.toDouble())] = block.type
+                            }
+                        }
                     }
+
+                    oldBlocks[player] = locationTypeMap
+                    playerCampfire[player] = clipboard
+                    playerOffsets[player] = offsets
+                    player.queueDialogue(
+                        createFirstJoinDialogue(player)
+                    )
+
+                    campfireSpawner.spawn(player)
+                    player.setBedSpawnLocation(player.location, true)
                 }
-            }
-
-            oldBlocks[player] = locationTypeMap
-            playerCampfire[player] = clipboard
-            playerOffsets[player] = offsets
-            player.queueDialogue(
-                createFirstJoinDialogue(player)
-            )
-
-            campfireSpawner.spawn(player)
+            }.runTaskLater(plugin, 20)
         }
-
     }
 
     // Probably move this to dialogue system in core?
