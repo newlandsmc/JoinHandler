@@ -3,14 +3,14 @@ package me.cookie.joinhandler.listeners
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import com.sk89q.worldedit.math.Vector3
 import com.sk89q.worldedit.regions.CuboidRegion
+import me.cookie.cookiecore.formatMinimessage
+import me.cookie.cookiecore.formatPlayerPlaceholders
+import me.cookie.cookiecore.message.dialogue.Dialogue
+import me.cookie.cookiecore.message.dialogue.queueDialogue
+import me.cookie.cookiecore.message.messagequeueing.MessageReceiver
+import me.cookie.cookiecore.message.messagequeueing.QueuedMessage
 import me.cookie.joinhandler.JoinHandler
 import me.cookie.joinhandler.StarterCampfire
-import me.cookie.semicore.formatPlayerPlaceholders
-import me.cookie.semicore.message.dialogue.Dialogue
-import me.cookie.semicore.message.dialogue.queueDialogue
-import me.cookie.semicore.message.messagequeueing.MessageReceiver
-import me.cookie.semicore.message.messagequeueing.QueuedMessage
-import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
@@ -33,17 +33,15 @@ class PlayerJoin: Listener {
     fun onPlayerJoin(event: PlayerJoinEvent){
         if(!event.player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
             event.joinMessage(
-                MiniMessage.get().parse(
-                    plugin.config.getString("first-join")!!
-                        .formatPlayerPlaceholders(event.player)
-                )
+                plugin.config.getString("first-join")!!
+                    .formatPlayerPlaceholders(event.player)
+                    .formatMinimessage()
             )
         }else{
             event.joinMessage(
-                MiniMessage.get().parse(
-                    plugin.config.getString("welcome-back")!!
-                        .formatPlayerPlaceholders(event.player)
-                )
+                plugin.config.getString("welcome-back")!!
+                    .formatPlayerPlaceholders(event.player)
+                    .formatMinimessage()
             )
         }
 
@@ -85,7 +83,7 @@ class PlayerJoin: Listener {
 
     // Probably move this to dialogue system in core?
 
-    private fun createFirstJoinDialogue(player: Player): Dialogue{
+    private fun createFirstJoinDialogue(player: Player): Dialogue {
         val messageList = mutableListOf<QueuedMessage>()
         val messageConfigSection = plugin.config.getConfigurationSection("first-join-dialogue")!!
             .getKeys(false)
@@ -98,9 +96,7 @@ class PlayerJoin: Listener {
             }
             messageList.add(
                 QueuedMessage(
-                    message = MiniMessage.get().parse(
-                        plugin.config.getString("first-join-dialogue.${message}.message")!!
-                    ),
+                    message = plugin.config.getString("first-join-dialogue.${message}.message")!!.formatMinimessage(),
                     receiver = MessageReceiver.PLAYER,
                     System.currentTimeMillis() + (delay.toLong() * 1000),
                     playerToSend = player

@@ -16,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.FileInputStream
 
-
 class StarterCampfire {
     private val plugin = JavaPlugin.getPlugin(JoinHandler::class.java)
     private val schematicFile = File("${plugin.dataFolder}/schematics/newplayerspawn.schem")
