@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 
-
 val oldBlocks = HashMap<Player, HashMap<Vector3, Material>>()
 val playerCampfire = HashMap<Player, Clipboard>()
 val playerOffsets = HashMap<Player, CuboidRegion>()
@@ -46,6 +45,7 @@ class PlayerJoin: Listener {
         }
 
         val player = event.player
+        player.queueDialogue(createFirstJoinDialogue(player))
         if(!player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
             object: BukkitRunnable() {
                 override fun run() {
