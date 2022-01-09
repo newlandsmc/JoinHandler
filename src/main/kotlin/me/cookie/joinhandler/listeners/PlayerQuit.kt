@@ -4,7 +4,6 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.math.Vector3
 import me.cookie.cookiecore.formatMinimessage
 import me.cookie.cookiecore.formatPlayerPlaceholders
-import me.cookie.joinhandler.JoinHandler
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -13,8 +12,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 
-class PlayerQuit: Listener {
-    private val plugin = JavaPlugin.getPlugin(JoinHandler::class.java)
+class PlayerQuit(private val plugin: JavaPlugin): Listener {
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent){
         val player = event.player

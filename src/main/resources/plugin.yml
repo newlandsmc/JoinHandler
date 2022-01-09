@@ -10,3 +10,8 @@ libraries:
 depend:
   - CookieCore
   - WorldEdit
+
+commands:
+  spawncampfire:
+    description: Spawns the first-join campfire (console only)
+    usage: /spawncampfire <player>
