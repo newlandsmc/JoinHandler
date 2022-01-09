@@ -4,6 +4,8 @@ main: me.cookie.joinhandler.JoinHandler
 description: Join operations.
 api-version: 1.18
 author: Cookie#8723
+libraries:
+  - 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
 
 depend:
   - CookieCore
