@@ -22,9 +22,7 @@ class PlayerJoin(private val plugin: JavaPlugin) : Listener {
         val player = event.player
         if (!player.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")) {
             event.joinMessage(
-                    plugin.config.getString("first-join")!!
-                            .formatPlayerPlaceholders(player)
-                            .formatMinimessage()
+                    null
             )
         } else {
             event.joinMessage(

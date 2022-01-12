@@ -2,6 +2,7 @@ package me.cookie.joinhandler.commands
 
 import com.sk89q.worldedit.math.Vector3
 import me.cookie.cookiecore.formatMinimessage
+import me.cookie.cookiecore.formatPlayerPlaceholders
 import me.cookie.cookiecore.message.dialogue.Dialogue
 import me.cookie.cookiecore.message.dialogue.queueDialogue
 import me.cookie.cookiecore.message.messagequeueing.MessageReceiver
@@ -74,7 +75,9 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
             plugin.config.getConfigurationSection("first-join-dialogue")!!.getKeys(false)
 
         for ((i, message) in messageConfigSection.withIndex()) {
-            var delay = 0
+            var delay = plugin.config.getInt(
+                "first-join-dialogue.${messageConfigSection.toTypedArray()[0]}.delay"
+            ) + 1
             for (j in 0 until i) {
                 delay +=
                     plugin.config.getInt(
@@ -94,7 +97,15 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
         return Dialogue(
             messages = messageList,
             receiver = MessageReceiver.PLAYER,
-            whenToSend = System.currentTimeMillis()
+            whenToSend = System.currentTimeMillis(),
+            toRun =  {
+                for (p in Bukkit.getServer().onlinePlayers){
+                    if(p.uniqueId == player.uniqueId) continue
+                    p.sendMessage(plugin.config.getString(
+                        "first-join"
+                    )!!.formatPlayerPlaceholders(player).formatMinimessage())
+                }
+            }
         )
     }
 }
