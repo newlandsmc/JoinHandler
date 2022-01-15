@@ -19,6 +19,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 
 class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -99,13 +100,18 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
             receiver = MessageReceiver.PLAYER,
             whenToSend = System.currentTimeMillis(),
             toRun =  {
-                Bukkit.getServer().onlinePlayers.forEach { receiver ->
-                    receiver.sendMessage(
-                        plugin.config.getString("first-join")!!
-                            .formatPlayerPlaceholders(player)
-                            .formatMinimessage()
-                    )
-                }
+                object: BukkitRunnable() {
+                    override fun run() {
+                        Bukkit.getServer().onlinePlayers.forEach { whyIsThisNotWorking ->
+                            whyIsThisNotWorking.sendMessage(
+                                plugin.config.getString("first-join")!!
+                                    .formatPlayerPlaceholders(player)
+                                    .formatMinimessage()
+                            )
+
+                        }
+                    }
+                }.runTaskLater(plugin, 40)
             }
         )
     }
