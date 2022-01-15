@@ -99,11 +99,13 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
             receiver = MessageReceiver.PLAYER,
             whenToSend = System.currentTimeMillis(),
             toRun =  {
-                Bukkit.getServer().broadcast(
-                    plugin.config.getString(
-                        "first-join"
-                    )!!.formatPlayerPlaceholders(player).formatMinimessage()
-                )
+                Bukkit.getServer().onlinePlayers.forEach { receiver ->
+                    receiver.sendMessage(
+                        plugin.config.getString("first-join")!!
+                            .formatPlayerPlaceholders(player)
+                            .formatMinimessage()
+                    )
+                }
             }
         )
     }
