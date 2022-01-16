@@ -99,11 +99,14 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
             messages = messageList,
             receiver = MessageReceiver.PLAYER,
             whenToSend = System.currentTimeMillis(),
+            muteForAfter = plugin.config.getInt(
+                "first-join-dialogue.${messageConfigSection.last()}.mute-chat-for"
+            ),
             toRun =  {
                 object: BukkitRunnable() {
                     override fun run() {
-                        Bukkit.getServer().onlinePlayers.forEach { whyIsThisNotWorking ->
-                            whyIsThisNotWorking.sendMessage(
+                        Bukkit.getServer().onlinePlayers.forEach { receiver ->
+                            receiver.sendMessage(
                                 plugin.config.getString("first-join")!!
                                     .formatPlayerPlaceholders(player)
                                     .formatMinimessage()

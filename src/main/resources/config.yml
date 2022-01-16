@@ -10,6 +10,7 @@ first-join-dialogue:
   3:
     message: "[3/3]<green>message three"
     delay: 3 # This message will send 5 seconds after the player joined, the delays stack from the previous messages
+    mute-chat-for: 8 # This is read only from the last message. Mutes the chat for this many seconds after the dialogue is finished
 
 
 revert-spawn-structure: true
