@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.math.Vector3
 import me.cookie.cookiecore.formatMinimessage
 import me.cookie.cookiecore.formatPlayerPlaceholders
+import me.cookie.cookiecore.inDialogue
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -16,9 +17,15 @@ class PlayerQuit(private val plugin: JavaPlugin): Listener {
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent){
         val player = event.player
-        event.quitMessage(plugin.config.getString("leave-message")!!
-            .formatPlayerPlaceholders(player).formatMinimessage())
-        if(!event.player.hasPlayedBefore()) {
+
+        if(!player.hasPlayedBefore() && player.inDialogue){
+            event.quitMessage(null) // Don't send quit message if they haven't completed dialogue yet.
+        }else{
+            event.quitMessage(plugin.config.getString("leave-message")!!
+                .formatPlayerPlaceholders(player).formatMinimessage())
+        }
+
+        if(!player.hasPlayedBefore()) {
             if(plugin.config.getBoolean("revert-spawn-structure")){
                 val clipboard = playerCampfire[player]
                 val offsets = playerOffsets[player]!!
