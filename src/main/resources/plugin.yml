@@ -15,3 +15,9 @@ commands:
   spawncampfire:
     description: Spawns the first-join campfire (console only)
     usage: /spawncampfire <player>
+    permission: joinhandler.spawncampfire
+
+permissions:
+  joinhandler.spawncampfire:
+    default: op
+    description: useless, just hides command from autocomplete.
