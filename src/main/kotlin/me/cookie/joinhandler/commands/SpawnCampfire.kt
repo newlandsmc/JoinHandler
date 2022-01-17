@@ -105,7 +105,7 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
             toRun =  {
                 object: BukkitRunnable() {
                     override fun run() {
-                        if(player.isOnline){ // Send join message only if player is online
+                        if(!player.hasPlayedBefore()){ // Send join message only if player is online
                             Bukkit.getServer().onlinePlayers.forEach { receiver ->
                                 receiver.sendMessage(
                                     plugin.config.getString("first-join")!!
@@ -116,7 +116,7 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
                         }
 
                     }
-                }.runTaskLater(plugin, 40)
+                }.runTaskLater(plugin, 5)
             }
         )
     }
