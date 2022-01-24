@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib", "1.6.0"))
-    compileOnly(files("D:\\coding\\Test Servers\\TimeRewards\\plugins\\CookieCore-1.0.jar"))
+    compileOnly(files("D:\\coding\\Test Servers\\TimeRewards\\plugins\\CookieCore.jar"))
     compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.0")
 }
