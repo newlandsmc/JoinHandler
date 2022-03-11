@@ -1,5 +1,5 @@
 name: JoinHandler
-version: 1.0
+version: 1.0.1
 main: me.cookie.joinhandler.JoinHandler
 description: Join operations.
 api-version: 1.18
