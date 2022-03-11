@@ -20,8 +20,8 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib", "1.6.0"))
-    compileOnly(files("D:\\coding\\Test Servers\\TimeRewards\\plugins\\CookieCore.jar"))
-    compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
+    compileOnly(files("G:\\coding\\Test Servers\\TimeRewards\\plugins\\CookieCore.jar"))
+    compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.0")
 }
 
@@ -30,7 +30,7 @@ tasks{
         archiveClassifier.set("")
         project.configurations.implementation.get().isCanBeResolved = true
         configurations = listOf(project.configurations.implementation.get())
-        destinationDirectory.set(file("D:\\coding\\Test Servers\\TimeRewards\\plugins"))
+        destinationDirectory.set(file("G:\\coding\\Test Servers\\TimeRewards\\plugins"))
     }
 }
 

@@ -106,7 +106,7 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
                 object: BukkitRunnable() {
                     override fun run() {
                         val otherPlayer = Bukkit.getPlayer(player.uniqueId) ?: return // Refresh player
-                        if(!otherPlayer.hasPlayedBefore()){
+                        if(!otherPlayer.hasPlayedBefore() || plugin.config.getBoolean("debug-spawn")){
                             Bukkit.getServer().onlinePlayers.forEach { receiver ->
                                 receiver.sendMessage(
                                     plugin.config.getString("first-join")!!
