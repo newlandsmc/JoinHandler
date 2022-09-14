@@ -62,7 +62,8 @@ class SpawnCampfire(private val plugin: JavaPlugin): CommandExecutor {
             oldBlocks[player] = locationTypeMap
             playerCampfire[player] = clipboard
             playerOffsets[player] = offsets
-            player.queueDialogue(createFirstJoinDialogue(player))
+            if (plugin.config.getBoolean("enable-dialogue"))
+                player.queueDialogue(createFirstJoinDialogue(player))
 
             campfireSpawner.spawn(player)
             player.setBedSpawnLocation(player.location, true)
